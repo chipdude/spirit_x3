@@ -9,6 +9,7 @@
 // this file deliberately contains non-ascii characters
 // boostinspect:noascii
 
+#include "hack.hpp"
 #include <boost/detail/lightweight_test.hpp>
 #include <boost/spirit/home/x3.hpp>
 
