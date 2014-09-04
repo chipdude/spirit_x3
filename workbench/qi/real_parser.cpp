@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdlib>
 #include <boost/spirit/include/qi.hpp>
+#include "double-conversion.h"
 
 namespace
 {   
@@ -49,12 +50,48 @@ namespace
         {
             for (int i = 0; i < ndigits; ++i) 
             {
-                double d = strtod(first[i], const_cast<char**>(&last[i]));
+                char *e;
+                double d = strtod(first[i], &e);
+                if (e != last[i]) {
+                    std::cerr << "strtod failed on " << first[i] << " at " << e;
+                    exit(1);
+                }
                 this->val += *reinterpret_cast<int*>(&d);
-            }                
+            }
         }
     };
-    
+
+    ///////////////////////////////////////////////////////////////////////////
+    struct double_conv_test : test::base
+    {
+        static double parse(char const* first, char const* last) {
+            using ::double_conversion::StringToDoubleConverter;
+            static const StringToDoubleConverter conv(
+                StringToDoubleConverter::ALLOW_TRAILING_JUNK |
+                  StringToDoubleConverter::ALLOW_HEX |
+                  StringToDoubleConverter::ALLOW_OCTALS,
+                0, 0,
+                "Inf", "NaN");
+            int used;
+            int len = last - first;
+            double d = conv.StringToDouble(first, len, &used);
+            if (used != len) {
+                std::cerr << "double-conversion failed on " << first << " at " << first + used;
+                exit(1);
+            }
+            return d;
+        }
+
+        void benchmark()
+        {
+            for (int i = 0; i < ndigits; ++i) 
+            {
+                double d = parse(first[i], last[i]);
+                this->val += *reinterpret_cast<int*>(&d);
+            }
+        }
+    };
+
     ///////////////////////////////////////////////////////////////////////////
     struct spirit_double_test : test::base
     {
@@ -85,9 +122,7 @@ int main()
     for (int i = 0; i < ndigits; ++i)
     {
         first[i] = numbers[i].c_str();
-        last[i] = first[i];
-        while (*last[i])
-            last[i]++;
+        last[i] = strchr(first[i], '\0');
         std::cout << numbers[i] << std::endl;
     }
     std::cout.precision(17);
@@ -98,6 +133,7 @@ int main()
         std::cout 
             << atof(first[i]) << ','
             << strtod(first[i], const_cast<char**>(&last[i])) << ','
+            << double_conv_test::parse(first[i], last[i]) << ','
             << spirit_double_test::parse(first[i], last[i]) << ','
             << std::endl;
     }
@@ -107,6 +143,7 @@ int main()
         10000000,     // This is the maximum repetitions to execute
         (atof_test)
         (strtod_test)
+        (double_conv_test)
         (spirit_double_test)
     )
     
