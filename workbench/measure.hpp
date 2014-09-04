@@ -120,7 +120,7 @@ namespace test
     /***/
 
 #define BOOST_SPIRIT_TEST_BENCHMARK(max_repeats, FSeq)              \
-    long repeats = 100;                                             \
+    long repeats = 1;                                               \
     double measured = 0;                                            \
     while (measured < 2.0 && repeats <= max_repeats)                \
     {                                                               \
