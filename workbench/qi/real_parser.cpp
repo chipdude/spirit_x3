@@ -13,7 +13,7 @@
 
 namespace
 {   
-    int const ndigits = 9; 
+    int const ndigits = 13; 
     std::string numbers[ndigits] =
     {
         "1234",
@@ -24,7 +24,13 @@ namespace
         "-2e6",
         "1.2345e5",
         "-5.7222349715140557e+307",
-        "2.0332938517515416e-308"
+        "2.0332938517515416e-308",
+
+        // constants from clang 3.6 on x86_64
+        "1.7976931348623157e+308", // DBL_MAX
+        "2.2204460492503131e-16",  // DBL_EPSILON
+        "2.2250738585072014e-308", // DBL_MIN
+        "4.9406564584124654e-324", // DBL_DENORM_MIN
     };
 
     char const* first[ndigits];
