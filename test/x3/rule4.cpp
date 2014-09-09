@@ -27,7 +27,7 @@ struct my_rule_class
 {
     template <typename Iterator, typename Exception, typename Context>
     x3::error_handler_result
-    on_error(Iterator&, Iterator const& last, Exception const& x, Context const& context)
+    on_error(Iterator const& /*first*/, Iterator const& last, Exception const& x, Context const& /*context*/)
     {
         std::cout
             << "Error! Expecting: "
@@ -42,7 +42,7 @@ struct my_rule_class
 
     template <typename Iterator, typename Attribute, typename Context>
     inline void
-    on_success(Iterator const&, Iterator const&, Attribute&, Context const&)
+    on_success(Iterator const& /*first*/, Iterator const& /*last*/, Attribute& /*attr*/, Context const& /*context*/)
     {
         ++got_it;
     }
