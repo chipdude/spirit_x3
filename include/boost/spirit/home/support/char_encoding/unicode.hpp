@@ -22,7 +22,7 @@ namespace boost { namespace spirit { namespace char_encoding
     ///////////////////////////////////////////////////////////////////////////
     struct unicode
     {
-        typedef ::boost::uint32_t char_type;
+        typedef char32_t char_type;
 
     ///////////////////////////////////////////////////////////////////////////
     //  Posix stuff
@@ -128,7 +128,7 @@ namespace boost { namespace spirit { namespace char_encoding
             return ucd::to_uppercase(ch);
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(char_type ch)
         {
             return ch;
